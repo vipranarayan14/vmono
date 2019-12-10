@@ -5,10 +5,10 @@ import base64
 
 window = tkinter.Tk()
 
-canvas = tkinter.Canvas(window, width=500, height=500)
+input_preview_canvas = tkinter.Canvas(window, width=500, height=500)
+output_preview_canvas = tkinter.Canvas(window, width=500, height=500)
 
-def generate_output_perview(img, threshold=0.5):
-    img.threshold(threshold)
+def generate_preview(img):
     img.transform(resize='500x500>')
     img.format = 'gif'
 
@@ -22,10 +22,16 @@ def generate_output_perview(img, threshold=0.5):
 
     return img_tk
 
-def insert_img(img):
-    img_tk = generate_output_perview(img)
+def generate_output_preview(img, threshold=0.5):
+    img.threshold(threshold)
+    return generate_preview(img)
+
+def show_input_preview(img):
+    input_preview_canvas.create_image(0, 0, image=generate_preview(img), anchor=tkinter.NW)
+
+def show_output_preview(img):
     global image_on_canvas
-    image_on_canvas = canvas.create_image(0, 0, image=img_tk, anchor=tkinter.NW)
+    image_on_canvas = output_preview_canvas.create_image(0, 0, image=generate_output_preview(img), anchor=tkinter.NW)
 
 def on_open():
     open_dialog = filedialog.Open(window, filetypes=[('All Files', '*.*')])
@@ -34,13 +40,14 @@ def on_open():
     if filepath != '':
         global image
         image = Image(filename=filepath)
-        insert_img(image.clone())
+        img = image.clone()
+        show_input_preview(img)
+        show_output_preview(img)
 
 def on_change(val):
     threshold = float(val)/100
-    print(threshold)
-    img_tk = generate_output_perview(image.clone(), threshold)
-    canvas.itemconfig(image_on_canvas, image=img_tk)
+    img_tk = generate_output_preview(image.clone(), threshold)
+    output_preview_canvas.itemconfig(image_on_canvas, image=img_tk)
 
 open_btn = tkinter.Button(window, text='Open')
 open_btn.configure(command=on_open)
@@ -51,7 +58,8 @@ threshold_slider.configure(command=on_change)
 
 open_btn.pack()
 threshold_slider.pack()
-canvas.pack(fill="both", expand=True)
+input_preview_canvas.pack(side=tkinter.LEFT)
+output_preview_canvas.pack(side=tkinter.LEFT)
 
 
 window.mainloop()
