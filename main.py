@@ -1,86 +1,30 @@
+'''Python bindings for qt5.'''
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+
 from wand.image import Image
-from tkinter import filedialog
-import tkinter
-import base64
-import os
 
-window = tkinter.Tk()
+class MainWindow(QMainWindow):
+    '''Subclass extending QMainWindow for customization.'''
 
-input_preview_canvas = tkinter.Canvas(window, width=500, height=500)
-output_preview_canvas = tkinter.Canvas(window, width=500, height=500)
+    def __init__(self, *args, **kwargs):
+        super(MainWindow, self).__init__(*args, **kwargs)
 
+        self.setWindowTitle('Learning Qt with PyQt')
 
-def generate_preview(img):
-    img.transform(resize='500x500>')
-    img.format = 'gif'
+        img = Image(filename='../vmono/samples/9.jpg')
+        img.threshold(0.5)
 
-    img_in_binary = img.make_blob()
-    img_in_base64 = base64.b64encode(img_in_binary).decode('ascii')
-    img_tk = tkinter.PhotoImage(data=img_in_base64)
+        image_preview = QLabel()
+        image_preview.setPixmap(QPixmap.fromImage(QImage.fromData(img.make_blob())))
 
-    # Just to avoid being garbage-collected
-    img_label = tkinter.Label(window)
-    img_label.image = img_tk
+        self.setCentralWidget(image_preview)
 
-    return img_tk
+APP = QApplication([])
 
+WINDOW = MainWindow()
 
-def generate_output_preview(img, threshold=0.5):
-    img.threshold(threshold)
-    return generate_preview(img)
+WINDOW.show()
 
-
-def show_input_preview(img):
-    input_preview_canvas.create_image(
-        0, 0, image=generate_preview(img), anchor=tkinter.NW)
-
-
-def show_output_preview(img):
-    global image_on_canvas
-    image_on_canvas = output_preview_canvas.create_image(
-        0, 0, image=generate_output_preview(img), anchor=tkinter.NW)
-
-
-def on_open():
-    open_dialog = filedialog.Open(window, filetypes=[('All Files', '*.*')])
-    file_path = open_dialog.show()
-
-    if file_path != '':
-        global image
-        image = Image(filename=file_path)
-        img = image.clone()
-        show_input_preview(img)
-        show_output_preview(img)
-
-
-def on_change(val):
-    global threshold
-    threshold = float(val) / 100
-    img_tk = generate_output_preview(image.clone(), threshold)
-    output_preview_canvas.itemconfig(image_on_canvas, image=img_tk)
-
-def on_save():
-    file = filedialog.asksaveasfile(mode='w', defaultextension='.jpg')
-    if file:
-        img = image.clone()
-        img.threshold(threshold)
-        img.save(filename=os.path.abspath(file.name))
-
-open_btn = tkinter.Button(window, text='Open')
-open_btn.configure(command=on_open)
-
-save_btn = tkinter.Button(window, text='Save')
-save_btn.configure(command=on_save)
-
-threshold_slider = tkinter.Scale(
-    window, from_=25, to=75, orient=tkinter.HORIZONTAL)
-threshold_slider.set(50)
-threshold_slider.configure(command=on_change)
-
-open_btn.pack()
-save_btn.pack()
-threshold_slider.pack()
-input_preview_canvas.pack(side=tkinter.LEFT)
-output_preview_canvas.pack(side=tkinter.LEFT)
-
-window.mainloop()
+APP.exec()  # exec() = exec_() in PyQt5
