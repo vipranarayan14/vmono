@@ -11,6 +11,11 @@ from os import path
 TODO 2 Add support for opening multiple files 
         - array contains filenames 
         - next btn switches to next preview.
+TODO Use threshold_display label as messagebox for showing
+        - open instruction
+        - threshold val
+        - saved status and filepath
+TODO Update window title with opened filename
 '''
 
 class MainWindow(QMainWindow):
