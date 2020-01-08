@@ -8,7 +8,7 @@ from wand.image import Image
 from os import path
 
 '''
-TODO 2 Add support for opening multiple files 
+TODO 3 Add support for opening multiple files 
         - array contains filenames 
         - next btn switches to next preview.
 TODO Use threshold_display label as messagebox for showing
@@ -16,6 +16,7 @@ TODO Use threshold_display label as messagebox for showing
         - threshold val
         - saved status and filepath
 TODO Update window title with opened filename
+TODO Show stacked previews instead of side-by-side view
 '''
 
 class MainWindow(QMainWindow):
@@ -66,7 +67,7 @@ class MainWindow(QMainWindow):
 
         # === previews_layout ===
 
-        # TODO: Scale previews with aspect ratio and resize on window resize
+        # TODO 2 Scale previews with aspect ratio and resize on window resize
         self.input_preview = QLabel('Click "Open" to load image.')
         self.input_preview.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
@@ -101,16 +102,12 @@ class MainWindow(QMainWindow):
         self.save_btn.setEnabled(True)
 
     def on_open_btn_click(self):
-        filedesc = QFileDialog.getOpenFileName(
-            self, 'Open file', '', 'Image files (*.jpg)')
+        filename, _ = QFileDialog.getOpenFileName(self, caption='Open file', filter='Image files (*.jpg)')
 
-        if filedesc:
-            filename = filedesc[0]
+        if filename:
             self.load_img(filename)
             self.enableUI()
         
-        # TODO 1 handle QFileDialog on cancel
-
     @staticmethod
     def generate_preview(image, width, height):
         # TODO Use low-size image - both dimensionally and memory-wise for perview
@@ -138,9 +135,9 @@ class MainWindow(QMainWindow):
         self.update_output_preview()
 
     def on_save_btn_click(self):
-        filedesc = QFileDialog.getSaveFileName(self, 'Save File')
-        if filedesc:
-            filename = filedesc[0]
+        filename, _ = QFileDialog.getSaveFileName(self, caption='Save File')
+        
+        if filename:
             img = self.image.clone()
             img.threshold(self.threshold_val / 100)
             img.save(filename=path.abspath(filename))
