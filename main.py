@@ -67,13 +67,12 @@ class MainWindow(QMainWindow):
 
         # === previews_layout ===
 
-        # TODO 2 Scale previews with aspect ratio and resize on window resize
+        # TODO Resize on window resize
         self.input_preview = QLabel('Click "Open" to load image.')
         self.input_preview.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
         self.output_preview = QLabel('Output preview will be here.')
         self.output_preview.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-
 
         previews_layout = QHBoxLayout()
         previews_layout.addWidget(self.input_preview)
@@ -109,16 +108,13 @@ class MainWindow(QMainWindow):
             self.enableUI()
         
     @staticmethod
-    def generate_preview(image, width, height):
+    def generate_preview(image, size):
         # TODO Use low-size image - both dimensionally and memory-wise for perview
-        image.transform(resize='500x500>')
-        print(width, height)
-        pixmap = QPixmap.fromImage(QImage.fromData(image.make_blob()))
-        pixmap.scaled(width, height, Qt.KeepAspectRatio)
-        return pixmap
+        return QPixmap.fromImage(QImage.fromData(image.make_blob())).scaled(size, Qt.KeepAspectRatio)
 
     def show_previews(self):
-        self.input_preview.setPixmap(self.generate_preview(self.input_preview_img, self.input_preview.width(), self.input_preview.height()))
+        input_preview_pixmap = self.generate_preview(self.input_preview_img, self.input_preview.size())
+        self.input_preview.setPixmap(input_preview_pixmap)
         self.update_output_preview()
 
     def update_threshold_display(self):
@@ -127,7 +123,8 @@ class MainWindow(QMainWindow):
     def update_output_preview(self):
         output_preview_img = self.image.clone()
         output_preview_img.threshold(self.threshold_val / 100)
-        self.output_preview.setPixmap(self.generate_preview(output_preview_img, self.output_preview.width(), self.output_preview.height()))
+        output_preview_pixmap = self.generate_preview(output_preview_img, self.output_preview.size())
+        self.output_preview.setPixmap(output_preview_pixmap)
 
     def on_threshold_val_change(self, value):
         self.threshold_val = value
