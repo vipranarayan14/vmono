@@ -15,7 +15,7 @@ TODO Use threshold_display label as messagebox for showing
         - open instruction
         - threshold val
         - saved status and filepath
-TODO Update window title with opened filename
+DONE Update window title with opened filename
 TODO Show stacked previews instead of side-by-side view
 '''
 
@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        self.setWindowTitle('vmono')
+        self.setWindowTitle('Vmono')
         self.resize(1000, 800)
 
         self.threshold_val = 55
@@ -94,6 +94,7 @@ class MainWindow(QMainWindow):
     def load_img(self, filename):
         self.image = Image(filename=filename)
         self.input_preview_img = self.image.clone()
+        self.setWindowTitle(self.windowTitle() + ' |  ' + filename)
         self.show_previews()
 
     def enableUI(self):
