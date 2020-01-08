@@ -7,6 +7,12 @@ from wand.image import Image
 
 from os import path
 
+'''
+TODO 2 Add support for opening multiple files 
+        - array contains filenames 
+        - next btn switches to next preview.
+'''
+
 class MainWindow(QMainWindow):
     '''Subclass extending QMainWindow for customization.'''
 
@@ -48,12 +54,14 @@ class MainWindow(QMainWindow):
         # === display_layout ===
         self.threshold_display = QLabel()
         self.threshold_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.threshold_display.setMaximumHeight(15)      # TODO: Make this relative to window size
+        self.threshold_display.setMaximumHeight(15)      # TODO Make this relative to window size
 
         display_layout = QHBoxLayout()
         display_layout.addWidget(self.threshold_display)
 
         # === previews_layout ===
+
+        # TODO: Scale previews with aspect ratio and resize on window resize
         self.input_preview = QLabel('Click "Open" to load image.')
         self.input_preview.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
@@ -96,10 +104,11 @@ class MainWindow(QMainWindow):
             self.load_img(filename)
             self.enableUI()
         
-        # TODO: on cancel
+        # TODO 1 handle QFileDialog on cancel
 
     @staticmethod
     def generate_preview(image, width, height):
+        # TODO Use low-size image - both dimensionally and memory-wise for perview
         image.transform(resize='500x500>')
         print(width, height)
         pixmap = QPixmap.fromImage(QImage.fromData(image.make_blob()))
