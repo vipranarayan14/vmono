@@ -139,11 +139,3 @@ class MainWindow(QMainWindow):
             img = self.image.clone()
             img.threshold(self.threshold_val / 100)
             img.save(filename=path.abspath(filename))
-
-APP = QApplication([])
-
-WINDOW = MainWindow()
-
-WINDOW.show()
-
-APP.exec()
