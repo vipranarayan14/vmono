@@ -1,5 +1,5 @@
 {
-    "app_name": "Vmono",
+    "app_name": "vMono",
     "author": "Prasanna Venkatesh T S",
     "main_module": "src/main/python/main.py",
     "version": "0.0.0"

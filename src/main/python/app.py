@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
-        self.setWindowTitle('Vmono')
+        self.setWindowTitle('vMono')
         self.resize(1000, 800)
 
         self.threshold_val = 55
