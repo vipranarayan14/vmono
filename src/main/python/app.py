@@ -1,23 +1,33 @@
-'''Python bindings for qt5.'''
+'''
+GUI for converting an image to black-and-white
+by adjusting its threshold using Wand API for ImageMagick.
+'''
+
+from os import path
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QImage, QPixmap, QPalette
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QLabel, QPushButton, QFileDialog, QVBoxLayout, QHBoxLayout, QSizePolicy, QSlider
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QWidget,
+    QLabel,
+    QPushButton,
+    QFileDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QSlider
+)
 
 from wand.image import Image
 
-from os import path
 
-'''
-TODO 3 Add support for opening multiple files 
-        - array contains filenames 
-        - next btn switches to next preview.
-TODO Use threshold_display label as messagebox for showing
-        - open instruction
-        - threshold val
-        - saved status and filepath
-DONE Update window title with opened filename
-TODO Show stacked previews instead of side-by-side view
-'''
+def generate_preview(image, size):
+    '''Generates preview for the given `image` as a QPixmap.'''
+    image_binary = image.make_blob()
+    q_image = QImage.fromData(image_binary)
+    q_pixmap = QPixmap.fromImage(q_image)
+    q_pixmap_scaled = q_pixmap.scaled(size, Qt.KeepAspectRatio)
+    return q_pixmap_scaled
+
 
 class MainWindow(QMainWindow):
     '''Subclass extending QMainWindow for customization.'''
@@ -28,11 +38,13 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('vMono')
         self.resize(1000, 800)
 
+        self.image = None
         self.threshold_val = 55
 
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    def init_ui(self):
+        '''Initiates user interface.'''
         # === controls_layout ===
         open_btn = QPushButton('Open')
         open_btn.clicked.connect(self.on_open_btn_click)
@@ -45,12 +57,13 @@ class MainWindow(QMainWindow):
         self.threshold_slider.setTickInterval(5)
         self.threshold_slider.setValue(self.threshold_val)
         self.threshold_slider.setEnabled(False)
-        self.threshold_slider.valueChanged.connect(self.on_threshold_val_change)
+        self.threshold_slider.valueChanged.connect(
+            self.on_threshold_val_change
+        )
 
         self.save_btn = QPushButton('Save')
         self.save_btn.setEnabled(False)
         self.save_btn.clicked.connect(self.on_save_btn_click)
-
 
         controls_layout = QHBoxLayout()
         controls_layout.addWidget(open_btn)
@@ -60,14 +73,13 @@ class MainWindow(QMainWindow):
         # === display_layout ===
         self.threshold_display = QLabel()
         self.threshold_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.threshold_display.setMaximumHeight(15)      # TODO Make this relative to window size
+        self.threshold_display.setMaximumHeight(15)
 
         display_layout = QHBoxLayout()
         display_layout.addWidget(self.threshold_display)
 
         # === previews_layout ===
 
-        # TODO Resize on window resize
         self.input_preview = QLabel('Click "Open" to load image.')
         self.input_preview.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
@@ -91,50 +103,68 @@ class MainWindow(QMainWindow):
 
         self.update_threshold_display()
 
-    def load_img(self, filename):
-        self.image = Image(filename=filename)
-        self.input_preview_img = self.image.clone()
-        self.setWindowTitle(self.windowTitle() + ' |  ' + filename)
+    def load_img(self, filepath):
+        '''Loads the image from the given `filepath`.'''
+        self.image = Image(filename=filepath)
+        self.setWindowTitle(self.windowTitle() + ' |  ' + filepath)
         self.show_previews()
 
-    def enableUI(self):
+    def enable_ui(self):
+        '''Enables the UI after an image is loaded.'''
         self.threshold_slider.setEnabled(True)
         self.save_btn.setEnabled(True)
 
     def on_open_btn_click(self):
-        filename, _ = QFileDialog.getOpenFileName(self, caption='Open file', filter='Image files (*.jpg)')
+        '''Handles `open_btn` click event.'''
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, caption='Open file', filter='Image files (*.jpg)'
+        )
 
-        if filename:
-            self.load_img(filename)
-            self.enableUI()
-        
-    @staticmethod
-    def generate_preview(image, size):
-        # TODO Use low-size image - both dimensionally and memory-wise for perview
-        return QPixmap.fromImage(QImage.fromData(image.make_blob())).scaled(size, Qt.KeepAspectRatio)
+        if filepath:
+            self.load_img(filepath)
+            self.enable_ui()
+
+    def show_input_preview(self):
+        '''Shows the preview of the input image in `self.image`.'''
+        input_preview_img = self.image.clone()
+        input_preview_pixmap = generate_preview(
+            input_preview_img,
+            self.input_preview.size()
+        )
+        self.input_preview.setPixmap(input_preview_pixmap)
 
     def show_previews(self):
-        input_preview_pixmap = self.generate_preview(self.input_preview_img, self.input_preview.size())
-        self.input_preview.setPixmap(input_preview_pixmap)
+        '''Shows input and output previews.'''
+        self.show_input_preview()
         self.update_output_preview()
 
     def update_threshold_display(self):
+        '''Updates `self.threshold_display` with current value in `self.threshold_val`.'''
         self.threshold_display.setText(str(self.threshold_val) + '%')
 
     def update_output_preview(self):
+        '''
+        Updates `self.output_preview` with a new copy of the `self.image`
+        set to current value in `self.threshold_val`.
+        '''
         output_preview_img = self.image.clone()
         output_preview_img.threshold(self.threshold_val / 100)
-        output_preview_pixmap = self.generate_preview(output_preview_img, self.output_preview.size())
+        output_preview_pixmap = generate_preview(
+            output_preview_img,
+            self.output_preview.size()
+        )
         self.output_preview.setPixmap(output_preview_pixmap)
 
     def on_threshold_val_change(self, value):
+        '''Handles `self.threshold_slider` value change event.'''
         self.threshold_val = value
         self.update_threshold_display()
         self.update_output_preview()
 
     def on_save_btn_click(self):
+        '''Handles `self.save_btn` click event.'''
         filename, _ = QFileDialog.getSaveFileName(self, caption='Save File')
-        
+
         if filename:
             img = self.image.clone()
             img.threshold(self.threshold_val / 100)
