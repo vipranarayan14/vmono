@@ -22,6 +22,7 @@ from wand.image import Image
 
 def generate_preview(image, size):
     '''Generates preview for the given `image` as a QPixmap.'''
+    image.compression_quality = 50
     image_binary = image.make_blob()
     q_image = QImage.fromData(image_binary)
     q_pixmap = QPixmap.fromImage(q_image)
