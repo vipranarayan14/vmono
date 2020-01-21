@@ -103,6 +103,33 @@ class MainWindow(QMainWindow):
 
         self.update_threshold_display()
 
+    def on_open_btn_click(self):
+        '''Handles `open_btn` click event.'''
+        filepath, _ = QFileDialog.getOpenFileName(
+            self, caption='Open file', filter='Image files (*.jpg)'
+        )
+
+        if filepath:
+            self.load_img(filepath)
+            self.enable_ui()
+
+    def on_save_btn_click(self):
+        '''Handles `self.save_btn` click event.'''
+        filepath, _ = QFileDialog.getSaveFileName(self, caption='Save File')
+
+        if filepath:
+            self.generate_output(filepath)
+
+    def on_threshold_val_change(self, value):
+        '''Handles `self.threshold_slider` value change event.'''
+        self.threshold_val = value
+        self.update_threshold_display()
+        self.update_output_preview()
+
+    def update_threshold_display(self):
+        '''Updates `self.threshold_display` with current value in `self.threshold_val`.'''
+        self.threshold_display.setText(str(self.threshold_val) + '%')
+
     def load_img(self, filepath):
         '''Loads the image from the given `filepath`.'''
         self.image = Image(filename=filepath)
@@ -114,15 +141,10 @@ class MainWindow(QMainWindow):
         self.threshold_slider.setEnabled(True)
         self.save_btn.setEnabled(True)
 
-    def on_open_btn_click(self):
-        '''Handles `open_btn` click event.'''
-        filepath, _ = QFileDialog.getOpenFileName(
-            self, caption='Open file', filter='Image files (*.jpg)'
-        )
-
-        if filepath:
-            self.load_img(filepath)
-            self.enable_ui()
+    def show_previews(self):
+        '''Shows input and output previews.'''
+        self.show_input_preview()
+        self.update_output_preview()
 
     def show_input_preview(self):
         '''Shows the preview of the input image in `self.image`.'''
@@ -132,15 +154,6 @@ class MainWindow(QMainWindow):
             self.input_preview.size()
         )
         self.input_preview.setPixmap(input_preview_pixmap)
-
-    def show_previews(self):
-        '''Shows input and output previews.'''
-        self.show_input_preview()
-        self.update_output_preview()
-
-    def update_threshold_display(self):
-        '''Updates `self.threshold_display` with current value in `self.threshold_val`.'''
-        self.threshold_display.setText(str(self.threshold_val) + '%')
 
     def update_output_preview(self):
         '''
@@ -155,17 +168,11 @@ class MainWindow(QMainWindow):
         )
         self.output_preview.setPixmap(output_preview_pixmap)
 
-    def on_threshold_val_change(self, value):
-        '''Handles `self.threshold_slider` value change event.'''
-        self.threshold_val = value
-        self.update_threshold_display()
-        self.update_output_preview()
-
-    def on_save_btn_click(self):
-        '''Handles `self.save_btn` click event.'''
-        filename, _ = QFileDialog.getSaveFileName(self, caption='Save File')
-
-        if filename:
-            img = self.image.clone()
-            img.threshold(self.threshold_val / 100)
-            img.save(filename=path.abspath(filename))
+    def generate_output(self, filepath):
+        '''
+        Generates output with current value in `self.threshold_val`
+        and saves it to the given filepath.
+        '''
+        img = self.image.clone()
+        img.threshold(self.threshold_val / 100)
+        img.save(filename=path.abspath(filepath))
