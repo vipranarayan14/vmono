@@ -24,4 +24,4 @@
 -[] Show stacked previews instead of side-by-side view
 -[] Make `self.threshold_display` relative to content size or window size
 -[] Make previews resize on window resize
--[] Use low-size image - both dimensionally and memory-wise for perviews
+-[x] Use low-quality image for perviews
