@@ -9,8 +9,8 @@ autopep8 = "*"
 fbs = "*"
 
 [packages]
-pyqt5 = "*"
 wand = "*"
+pyqt5 = "*"
 
 [requires]
 python_version = "3.7"
