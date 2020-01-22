@@ -25,4 +25,4 @@
 - [ ] Make `self.threshold_display` relative to content size or window size
 - [ ] Make previews resize on window resize
 - [x] Use low-quality image for perviews
-- [ ] Support opening of any image format.
+- [-] Support opening of any image format.
