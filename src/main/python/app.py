@@ -119,11 +119,21 @@ class MainWindow(QMainWindow):
         previews_layout.addWidget(self.input_preview_display)
         previews_layout.addWidget(self.output_preview_display)
 
+        # === footer_layout ===
+
+        footer = QLabel('Copyright (c) 2020 Prasanna Venkatesh T S')
+        footer.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        footer.setMaximumHeight(15)
+
+        footer_layout = QHBoxLayout()
+        footer_layout.addWidget(footer)
+
         # === layout_wrapper ===
         layout_wrapper = QVBoxLayout()
         layout_wrapper.addLayout(controls_layout)
         layout_wrapper.addLayout(nav_layout)
         layout_wrapper.addLayout(previews_layout)
+        layout_wrapper.addLayout(footer_layout)
 
         central_widget = QWidget()
         central_widget.setLayout(layout_wrapper)
