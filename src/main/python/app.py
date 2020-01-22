@@ -45,24 +45,18 @@ class MainWindow(QMainWindow):
         self.default_threshold_value = 55
 
         self.curr_idx = 0
-        self.filenames = []
         self.default_output_path = ''
-
+        self.filenames = []
         self.input_images = []
-        self.input_previews = []
-        self.output_previews = []
         self.threshold_values = []
 
         self.init_ui()
 
     def init_attributes(self):
         self.curr_idx = 0
-        self.filenames = []
         self.default_output_path = ''
-
+        self.filenames = []
         self.input_images = []
-        self.input_previews = []
-        self.output_previews = []
         self.threshold_values = []
 
     def init_ui(self):
@@ -173,7 +167,7 @@ class MainWindow(QMainWindow):
             self.update_ui()
 
     def update_ui(self):
-        self.display_previews()
+        self.update_previews()
         self.update_threshold_display()
         self.update_window_title()
 
@@ -199,22 +193,9 @@ class MainWindow(QMainWindow):
             input_image = Image(filename=filepath)
             self.input_images.append(input_image)
 
-        self.generate_previews()
-        self.display_previews()
-
-    def generate_input_previews(self, img):
-        input_preview_img = img.clone()
-        input_preview_pixmap = generate_preview(
-            input_preview_img,
-            self.input_preview_display.size()
-        )
-        self.input_previews.append(input_preview_pixmap)
-
-    def generate_previews(self):
         self.threshold_values = [self.default_threshold_value] * len(self.input_images)
 
-        for img in self.input_images:
-            self.generate_input_previews(img)
+        self.update_previews()
 
     def enable_ui(self):
         '''Enables the UI after an image is loaded.'''
@@ -225,11 +206,19 @@ class MainWindow(QMainWindow):
         self.prev_btn.setEnabled(True)
         self.next_btn.setEnabled(True)
 
-    def display_previews(self):
+    def update_previews(self):
         '''Shows the preview of the input image in `self.image`.'''
 
-        self.input_preview_display.setPixmap(self.input_previews[self.curr_idx])
+        self.update_input_preview()
         self.update_output_preview()
+
+    def update_input_preview(self):
+        input_preview_img = self.input_images[self.curr_idx].clone()
+        input_preview_pixmap = generate_preview(
+            input_preview_img,
+            self.input_preview_display.size()
+        )
+        self.input_preview_display.setPixmap(input_preview_pixmap)
 
     def update_output_preview(self):
         '''
