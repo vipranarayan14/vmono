@@ -140,7 +140,7 @@ class MainWindow(QMainWindow):
     def on_open_btn_click(self):
         '''Handles `open_btn` click event.'''
         filepaths, _ = QFileDialog.getOpenFileNames(
-            self, caption='Open file', filter='Image files (*.jpg)'
+            self, caption='Open file', filter='Image files (*.jpg *.jpeg *.png *.tiff *.tif *.gif)'
         )
 
         if filepaths:
@@ -178,7 +178,7 @@ class MainWindow(QMainWindow):
         self.update_window_title()
 
     def update_window_title(self):
-            self.setWindowTitle(self.title + ' |  ' + self.filenames[self.curr_idx])
+        self.setWindowTitle(self.title + ' |  ' + self.filenames[self.curr_idx])
 
     def update_threshold_display(self):
         '''Updates `self.threshold_display` with current value in `self.default_threshold_value`.'''
