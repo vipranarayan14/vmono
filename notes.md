@@ -13,15 +13,16 @@
 6. 
 
 # TODOS
--[] 3 Add support for opening multiple files
-        -[] array contains filenames
-        -[] next btn switches to next preview.
--[] Use threshold_display label as messagebox for showing
-        -[] open instruction
-        -[] threshold val
-        -[] saved status and filepath
--[x] Update window title with opened filename
--[] Show stacked previews instead of side-by-side view
--[] Make `self.threshold_display` relative to content size or window size
--[] Make previews resize on window resize
--[x] Use low-quality image for perviews
+- [x] Add support for opening multiple files
+  - [x] array contains filenames
+  - [x] next btn switches to next preview.
+- [ ] Use threshold_display label as messagebox for showing
+  - [ ] open instruction
+  - [ ] threshold val
+  - [ ] saved status and filepath
+- [x] Update window title with opened filename
+- [ ] Show stacked previews instead of side-by-side view
+- [ ] Make `self.threshold_display` relative to content size or window size
+- [ ] Make previews resize on window resize
+- [x] Use low-quality image for perviews
+- [ ] Support opening of any image format.
