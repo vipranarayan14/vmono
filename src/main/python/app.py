@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self.init_ui()
 
     def init_attributes(self):
+        '''Reintiates class attributes'''
         self.curr_idx = 0
         self.default_output_path = ''
         self.filenames = []
@@ -157,35 +158,25 @@ class MainWindow(QMainWindow):
         self.update_output_preview()
 
     def on_prev_btn_click(self):
+        '''Handles `self.prev_btn` click event.'''
         if self.curr_idx > 0:
             self.curr_idx -= 1
             self.update_ui()
 
     def on_next_btn_click(self):
+        '''Handles `self.next_btn` click event.'''
         if self.curr_idx < len(self.input_images) - 1:
             self.curr_idx += 1
             self.update_ui()
 
-    def update_ui(self):
-        self.update_previews()
-        self.update_threshold_display()
-        self.update_window_title()
-
-    def update_window_title(self):
-        self.setWindowTitle(self.title + ' |  ' + self.filenames[self.curr_idx])
-
-    def update_threshold_display(self):
-        '''Updates `self.threshold_display` with current value in `self.default_threshold_value`.'''
-        curr_threshold_value = (
-            self.threshold_values[self.curr_idx]
-            if self.threshold_values
-            else self.default_threshold_value
-        )
-        self.threshold_slider.setValue(curr_threshold_value)
-        self.threshold_display.setText(str(curr_threshold_value) + '%')
-
     def load_img(self, filepaths):
-        '''Loads the image from the given `filepath`.'''
+        '''
+        Loads the image for the given `filepaths`
+        and stores them in `self.input_images`.
+
+        Set intial threshold value, for each image in `self.input_images`,
+        in `self.threshold_values`.
+        '''
         for filepath in filepaths:
             filename = path.basename(filepath)
             self.filenames.append(filename)
@@ -206,13 +197,40 @@ class MainWindow(QMainWindow):
         self.prev_btn.setEnabled(True)
         self.next_btn.setEnabled(True)
 
+    def update_ui(self):
+        '''Updates UI whenever `self.curr_idx` changes.'''
+        self.update_previews()
+        self.update_threshold_display()
+        self.update_window_title()
+
+    def update_window_title(self):
+        '''Adds the current preview's filename to the window's title.'''
+        self.setWindowTitle(self.title + ' |  ' + self.filenames[self.curr_idx])
+
+    def update_threshold_display(self):
+        '''
+        Updates `self.threshold_display` and `self.threshold_slider`
+        with a value in `self.threshold_values` according to the `self.curr_idx`.
+        '''
+        curr_threshold_value = (
+            self.threshold_values[self.curr_idx]
+            if self.threshold_values
+            else self.default_threshold_value
+        )
+        self.threshold_slider.setValue(curr_threshold_value)
+        self.threshold_display.setText(str(curr_threshold_value) + '%')
+
     def update_previews(self):
-        '''Shows the preview of the input image in `self.image`.'''
+        '''Update the input and output previews.'''
 
         self.update_input_preview()
         self.update_output_preview()
 
     def update_input_preview(self):
+        '''
+        Updates `self.input_preview_display` with the copy of a image
+        from `self.input_images` according to the `self.curr_idx`.
+        '''
         input_preview_img = self.input_images[self.curr_idx].clone()
         input_preview_pixmap = generate_preview(
             input_preview_img,
@@ -222,8 +240,9 @@ class MainWindow(QMainWindow):
 
     def update_output_preview(self):
         '''
-        Updates `self.output_preview_display` with a new copy of the `self.image`
-        set to current value in `self.default_threshold_value`.
+        Updates `self.output_preview_display` with the copy of a image
+        from `self.input_images` set to the threshold value
+        according to the `self.curr_idx`.
         '''
         output_preview_img = self.input_images[self.curr_idx].clone()
         output_preview_img.threshold(self.threshold_values[self.curr_idx] / 100)
@@ -235,8 +254,9 @@ class MainWindow(QMainWindow):
 
     def generate_output(self, dirpath):
         '''
-        Generates output with current value in `self.default_threshold_value`
-        and saves it to the given filepath.
+        For each opened file, make output filepath and write output
+        if the output filepath does not already exists
+        or the user agrees to replace the existing file.
         '''
         for idx, filename in enumerate(self.filenames):
 
@@ -253,6 +273,11 @@ class MainWindow(QMainWindow):
                 self.write_output(output_filepath, idx)
 
     def confirm_replace(self, filename, dirname):
+        '''
+        Show a warning messagebox to confirm
+        if the user agrees to replace the existing file
+        and return user response.
+        '''
         msgbox = QMessageBox(self)
         msgbox.setIcon(QMessageBox.Warning)
         msgbox.setWindowTitle(self.title)
@@ -270,6 +295,11 @@ class MainWindow(QMainWindow):
         return response == QMessageBox.Ok
 
     def write_output(self, filepath, idx):
+        '''
+        Makes output images for the images in `self.input_images`
+        with the corresponding threshold values in `self.threshold_values`
+        and saves it to the given filepath.
+        '''
         img = self.input_images[idx].clone()
         img.threshold(self.threshold_values[idx] / 100)
         img.save(filename=filepath)
