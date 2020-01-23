@@ -31,10 +31,10 @@ steps:
     pipenv run fbs freeze
   displayName: 'fbs freeze'
 
-# - script: |
-#     pipenv graph
-#      pipenv run fbs installer
-#   displayName: 'fbs installer'
+- script: |
+    pipenv graph
+    pipenv run fbs installer
+  displayName: 'fbs installer'
 
 # - publish: $(System.DefaultWorkingDirectory)
  
