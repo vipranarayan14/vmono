@@ -6,11 +6,12 @@ verify_ssl = true
 [dev-packages]
 pylint = "*"
 autopep8 = "*"
-fbs = "*"
 
 [packages]
 wand = "*"
 pyqt5 = "*"
+pyinstaller = "==3.4"
+fbs = "*"
 
 [requires]
 python_version = "3.7"
