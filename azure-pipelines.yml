@@ -26,6 +26,5 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    pipenv shell
-    fbs --help
-  displayName: 'pytest'
+    pipenv list
+  displayName: 'test'
