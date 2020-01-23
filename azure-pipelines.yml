@@ -36,13 +36,13 @@ steps:
     pipenv run fbs installer
   displayName: 'fbs installer'
 
-# - publish: $(System.DefaultWorkingDirectory)
+- publish: $(System.DefaultWorkingDirectory)
  
-# - task: DownloadBuildArtifacts@0
-#   displayName: download build artefacts
-#   inputs:
-#     buildType: 'current'
-#     branchName: 'refs/heads/master'
-#     buildVersionToDownload: 'latest'
-#     downloadType: 'specific'
-#     downloadPath: '$(System.ArtifactsDirectory)'
+- task: DownloadBuildArtifacts@0
+  displayName: download build artefacts
+  inputs:
+    buildType: 'current'
+    branchName: 'refs/heads/master'
+    buildVersionToDownload: 'latest'
+    downloadType: 'specific'
+    downloadPath: '$(System.ArtifactsDirectory)'
