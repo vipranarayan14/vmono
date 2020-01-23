@@ -27,6 +27,5 @@ steps:
 
 - script: |
     pipenv graph
-    pipenv shell
-    fbs run
+    pipenv run fbs run
   displayName: 'test'
