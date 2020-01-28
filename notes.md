@@ -23,6 +23,6 @@
 - [x] Update window title with opened filename
 - [ ] Show stacked previews instead of side-by-side view
 - [ ] Make `self.threshold_display` relative to content size or window size
-- [ ] Make previews resize on window resize
+- [x] Make previews resize on window resize
 - [x] Use low-quality image for perviews
 - [-] Support opening of any image format.
