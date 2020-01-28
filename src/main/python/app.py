@@ -15,7 +15,8 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QHBoxLayout,
     QSlider,
-    QMessageBox
+    QMessageBox,
+    QSizePolicy
 )
 
 from wand.image import Image
@@ -108,12 +109,16 @@ class MainWindow(QMainWindow):
         nav_layout.addWidget(self.next_btn)
 
         # === previews_layout ===
+        alignment = Qt.AlignHCenter | Qt.AlignVCenter
+        size_policy = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
 
         self.input_preview_display = QLabel('Click "Open" to load image.')
-        self.input_preview_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.input_preview_display.setAlignment(alignment)
+        self.input_preview_display.setSizePolicy(size_policy)
 
         self.output_preview_display = QLabel('Output preview will be here.')
-        self.output_preview_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.output_preview_display.setAlignment(alignment)
+        self.output_preview_display.setSizePolicy(size_policy)
 
         previews_layout = QHBoxLayout()
         previews_layout.addWidget(self.input_preview_display)
@@ -178,6 +183,16 @@ class MainWindow(QMainWindow):
         if self.curr_idx < len(self.input_images) - 1:
             self.curr_idx += 1
             self.update_ui()
+
+    def resizeEvent(self, event): # pylint: disable=invalid-name
+        '''
+        Resizes the previews when window resizes.
+        '''
+
+        if self.input_images:
+            self.update_previews()
+
+        QMainWindow.resizeEvent(self, event)
 
     def load_img(self, filepaths):
         '''
