@@ -297,6 +297,8 @@ class MainWindow(QMainWindow):
             else:
                 self.write_output(output_filepath, idx)
 
+        self.show_saved_msg(dirpath)
+
     def confirm_replace(self, filename, dirname):
         '''
         Show a warning messagebox to confirm
@@ -328,3 +330,18 @@ class MainWindow(QMainWindow):
         img = self.input_images[idx].clone()
         img.threshold(self.threshold_values[idx] / 100)
         img.save(filename=filepath)
+
+    def show_saved_msg(self, output_dirpath):
+        '''
+        Shows the message saying that the images files have been saved
+        to the selected output folder.
+        '''
+        msgbox = QMessageBox(self)
+        msgbox.setIcon(QMessageBox.Information)
+        msgbox.setWindowTitle(self.title)
+        msgbox.setText(f'Saved output images to the selected folder.')
+        msgbox.setInformativeText(
+            (f'Saved image files to "{output_dirpath}"')
+        )
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.exec()
