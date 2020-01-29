@@ -26,3 +26,4 @@
 - [x] Make previews resize on window resize
 - [x] Use low-quality image for perviews
 - [-] Support opening of any image format.
+- [ ] Fix previews and threshold display not updating when next or prev btns are clicked.
