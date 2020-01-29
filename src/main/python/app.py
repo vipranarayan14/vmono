@@ -227,6 +227,7 @@ class MainWindow(QMainWindow):
         self.update_previews()
         self.update_threshold_display()
         self.update_window_title()
+        self.repaint()
 
     def update_window_title(self):
         '''Adds the current preview's filename to the window's title.'''
