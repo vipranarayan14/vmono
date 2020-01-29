@@ -53,8 +53,8 @@ class MainWindow(QMainWindow):
 
         self.init_ui()
 
-    def init_attributes(self):
-        '''Reintiates class attributes'''
+    def reset_attributes(self):
+        '''Reset class attributes to their default values'''
         self.curr_idx = 0
         self.default_output_path = ''
         self.filenames = []
@@ -154,7 +154,7 @@ class MainWindow(QMainWindow):
         )
 
         if filepaths:
-            self.init_attributes()
+            self.reset_attributes()
             self.load_img(filepaths)
             self.enable_ui()
             self.default_output_path = path.dirname(filepaths[0])
