@@ -178,7 +178,7 @@ class MainWindow(QMainWindow):
         self.action_incr_threshold = QAction(
             '&Increase Threshold',
             self,
-            shortcut='Right',
+            shortcut='Ctrl+Right',
             triggered=self.change_threshold_val(1),
             enabled=False
         )
@@ -186,22 +186,38 @@ class MainWindow(QMainWindow):
         self.action_decr_threshold = QAction(
             '&Decrease Threshold',
             self,
-            shortcut='Left',
+            shortcut='Ctrl+Left',
             triggered=self.change_threshold_val(-1),
             enabled=False
         )
         self.action_incr_threshold_by_5 = QAction(
             'I&ncrease Threshold by 5%',
             self,
-            shortcut='Shift+Right',
+            shortcut='Ctrl+Shift+Right',
             triggered=self.change_threshold_val(5),
             enabled=False
         )
         self.action_decr_threshold_by_5 = QAction(
             'D&ecrease Threshold by 5%',
             self,
-            shortcut='Shift+Left',
+            shortcut='Ctrl+Shift+Left',
             triggered=self.change_threshold_val(-5),
+            enabled=False
+        )
+
+        # === go actions ===
+        self.action_next_image = QAction(
+            '&Next Image',
+            self,
+            shortcut='Right',
+            triggered=self.next_image,
+            enabled=False
+        )
+        self.action_prev_image = QAction(
+            '&Previous Image',
+            self,
+            shortcut='Left',
+            triggered=self.prev_image,
             enabled=False
         )
 
@@ -219,23 +235,32 @@ class MainWindow(QMainWindow):
 
     def create_menus(self):
         '''Creates Menu Items in Menubar.'''
+        # === File Menu ===
         self.file_menu = QMenu('&File', self)
         self.file_menu.addAction(self.action_open)
         self.file_menu.addAction(self.action_save)
 
+        # === Edit Menu ===
         self.edit_menu = QMenu('&Edit', self)
         self.edit_menu.addAction(self.action_incr_threshold)
         self.edit_menu.addAction(self.action_decr_threshold)
         self.edit_menu.addAction(self.action_incr_threshold_by_5)
         self.edit_menu.addAction(self.action_decr_threshold_by_5)
 
-        self.about_menu = QMenu('&Help', self)
-        self.about_menu.addAction(self.action_show_about)
-        self.about_menu.addAction(self.action_show_about_qt)
+        # === Go Menu ===
+        self.go_menu = QMenu('&Go', self)
+        self.go_menu.addAction(self.action_next_image)
+        self.go_menu.addAction(self.action_prev_image)
+
+        # === Help Menu ===
+        self.help_menu = QMenu('&Help', self)
+        self.help_menu.addAction(self.action_show_about)
+        self.help_menu.addAction(self.action_show_about_qt)
 
         self.menuBar().addMenu(self.file_menu)
         self.menuBar().addMenu(self.edit_menu)
-        self.menuBar().addMenu(self.about_menu)
+        self.menuBar().addMenu(self.go_menu)
+        self.menuBar().addMenu(self.help_menu)
 
     def open_images(self):
         '''Handles `open_btn` click event.'''
@@ -285,6 +310,8 @@ class MainWindow(QMainWindow):
         self.action_decr_threshold.setEnabled(True)
         self.action_incr_threshold_by_5.setEnabled(True)
         self.action_decr_threshold_by_5.setEnabled(True)
+        self.action_next_image.setEnabled(True)
+        self.action_prev_image.setEnabled(True)
 
     def on_threshold_val_change(self, value):
         '''Handles `self.threshold_slider` value change event.'''
