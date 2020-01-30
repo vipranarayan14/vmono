@@ -137,7 +137,9 @@ class MainWindow(QMainWindow):
         # === footer_layout ===
 
         self.image_number_display = QLabel()
-        self.image_number_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.image_number_display.setAlignment(
+            Qt.AlignHCenter | Qt.AlignVCenter
+        )
         self.image_number_display.setMaximumHeight(15)
 
         footer_layout = QHBoxLayout()
@@ -385,7 +387,9 @@ class MainWindow(QMainWindow):
 
     def update_image_number_display(self):
         '''Shows total no. of images loaded and the curr image's no. like "1 of 34".'''
-        self.image_number_display.setText(f'{self.curr_idx + 1} of {len(self.input_images)}')
+        self.image_number_display.setText(
+            f'{self.curr_idx + 1} of {len(self.input_images)}'
+        )
 
     def update_previews(self):
         '''Update the input and output previews.'''
