@@ -7,6 +7,7 @@ from os import path
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import (
+    QAction,
     QMainWindow,
     QWidget,
     QLabel,
@@ -16,7 +17,8 @@ from PyQt5.QtWidgets import (
     QHBoxLayout,
     QSlider,
     QMessageBox,
-    QSizePolicy
+    QSizePolicy,
+    QMenu
 )
 
 from wand.image import Image
@@ -44,6 +46,9 @@ class MainWindow(QMainWindow):
         self.resize(1000, 800)
 
         self.default_threshold_value = 55
+        self.min_threshold_value = 25
+        self.max_threshold_value = 75
+        self.threshold_value_jump_interval = 5
 
         self.curr_idx = 0
         self.default_output_path = ''
@@ -52,6 +57,9 @@ class MainWindow(QMainWindow):
         self.threshold_values = []
 
         self.init_ui()
+
+        self.create_actions()
+        self.create_menus()
 
     def reset_attributes(self):
         '''Reset class attributes to their default values'''
@@ -68,12 +76,13 @@ class MainWindow(QMainWindow):
         open_btn.clicked.connect(self.on_open_btn_click)
 
         self.threshold_slider = QSlider(Qt.Horizontal)
-        self.threshold_slider.setMinimum(25)
-        self.threshold_slider.setMaximum(75)
+        self.threshold_slider.setMinimum(self.min_threshold_value)
+        self.threshold_slider.setMaximum(self.max_threshold_value)
         self.threshold_slider.setSingleStep(1)
         self.threshold_slider.setValue(self.default_threshold_value)
         self.threshold_slider.setTickPosition(QSlider.TicksAbove)
-        self.threshold_slider.setTickInterval(5)
+        self.threshold_slider.setTickInterval(
+            self.threshold_value_jump_interval)
         self.threshold_slider.setEnabled(False)
         self.threshold_slider.valueChanged.connect(
             self.on_threshold_val_change
@@ -147,10 +156,92 @@ class MainWindow(QMainWindow):
 
         self.update_threshold_display()
 
+    def create_actions(self):
+        '''Creates actions.'''
+        # === file actions ===
+        self.action_open = QAction(
+            '&Open...',
+            self,
+            shortcut='Ctrl+O',
+            triggered=self.on_open_btn_click
+        )
+        self.action_save = QAction(
+            '&Save...',
+            self,
+            shortcut='Ctrl+S',
+            triggered=self.on_save_btn_click,
+            enabled=False
+        )
+
+        # === edit actions ===
+        self.action_incr_threshold = QAction(
+            '&Increase Threshold',
+            self,
+            shortcut='Right',
+            triggered=self.change_threshold_val(1),
+            enabled=False
+        )
+
+        self.action_decr_threshold = QAction(
+            '&Decrease Threshold',
+            self,
+            shortcut='Left',
+            triggered=self.change_threshold_val(-1),
+            enabled=False
+        )
+        self.action_incr_threshold_by_5 = QAction(
+            'I&ncrease Threshold by 5%',
+            self,
+            shortcut='Shift+Right',
+            triggered=self.change_threshold_val(5),
+            enabled=False
+        )
+        self.action_decr_threshold_by_5 = QAction(
+            'D&ecrease Threshold by 5%',
+            self,
+            shortcut='Shift+Left',
+            triggered=self.change_threshold_val(-5),
+            enabled=False
+        )
+
+        # === about actions ===
+        self.action_show_about = QAction(
+            '&About',
+            self,
+            triggered=self.show_about
+        )
+        self.action_show_about_qt = QAction(
+            'About &Qt',
+            self,
+            triggered=lambda: QMessageBox.aboutQt(self)
+        )
+
+    def create_menus(self):
+        '''Creates Menu Items in Menubar.'''
+        self.file_menu = QMenu('&File', self)
+        self.file_menu.addAction(self.action_open)
+        self.file_menu.addAction(self.action_save)
+
+        self.edit_menu = QMenu('&Edit', self)
+        self.edit_menu.addAction(self.action_incr_threshold)
+        self.edit_menu.addAction(self.action_decr_threshold)
+        self.edit_menu.addAction(self.action_incr_threshold_by_5)
+        self.edit_menu.addAction(self.action_decr_threshold_by_5)
+
+        self.about_menu = QMenu('&Help', self)
+        self.about_menu.addAction(self.action_show_about)
+        self.about_menu.addAction(self.action_show_about_qt)
+
+        self.menuBar().addMenu(self.file_menu)
+        self.menuBar().addMenu(self.edit_menu)
+        self.menuBar().addMenu(self.about_menu)
+
     def on_open_btn_click(self):
         '''Handles `open_btn` click event.'''
         filepaths, _ = QFileDialog.getOpenFileNames(
-            self, caption='Open file', filter='Image files (*.jpg *.jpeg *.png *.tiff *.tif *.gif)'
+            self,
+            caption='Open file',
+            filter='Image files (*.jpg *.jpeg *.png *.tiff *.tif *.gif)'
         )
 
         if filepaths:
@@ -161,7 +252,8 @@ class MainWindow(QMainWindow):
 
     def on_save_btn_click(self):
         '''Handles `self.save_btn` click event.'''
-        dirpath = QFileDialog.getExistingDirectory(self, 'Save to Folder', self.default_output_path)
+        dirpath = QFileDialog.getExistingDirectory(
+            self, 'Save to Folder', self.default_output_path)
 
         if dirpath:
             self.generate_output(dirpath)
@@ -184,7 +276,7 @@ class MainWindow(QMainWindow):
             self.curr_idx += 1
             self.update_ui()
 
-    def resizeEvent(self, event): # pylint: disable=invalid-name
+    def resizeEvent(self, event):  # pylint: disable=invalid-name
         '''
         Resizes the previews when window resizes.
         '''
@@ -193,6 +285,35 @@ class MainWindow(QMainWindow):
             self.update_previews()
 
         QMainWindow.resizeEvent(self, event)
+
+    def change_threshold_val(self, change_by_value):
+        '''Changes the current threshold value by the given value'''
+        def _():
+            curr_threshold_value = self.threshold_values[self.curr_idx]
+            changed_threshold_val = curr_threshold_value + change_by_value
+
+            if changed_threshold_val > self.max_threshold_value:
+                changed_threshold_val = self.max_threshold_value
+            elif changed_threshold_val < self.min_threshold_value:
+                changed_threshold_val = self.min_threshold_value
+
+            self.threshold_values[self.curr_idx] = changed_threshold_val
+            self.update_ui()
+
+        return _
+
+    def show_about(self):
+        '''Shows information about the app.'''
+        msgbox = QMessageBox(self)
+        msgbox.setWindowTitle(self.title)
+        msgbox.setText(f'About {self.title}')
+        msgbox.setInformativeText(
+            'vMono is a GUI app to convert images (esp. scanned ones) to black-and-white'
+            ' by controlling the image threshold.'
+            '\n\n Uses ImageMagick through Wand API and Qt as GUI through PyQt5.'
+        )
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.exec()
 
     def load_img(self, filepaths):
         '''
@@ -209,7 +330,9 @@ class MainWindow(QMainWindow):
             input_image = Image(filename=filepath)
             self.input_images.append(input_image)
 
-        self.threshold_values = [self.default_threshold_value] * len(self.input_images)
+        self.threshold_values = [
+            self.default_threshold_value
+        ] * len(self.input_images)
 
         self.update_previews()
 
@@ -221,6 +344,11 @@ class MainWindow(QMainWindow):
         self.save_btn.setEnabled(True)
         self.prev_btn.setEnabled(True)
         self.next_btn.setEnabled(True)
+        self.action_save.setEnabled(True)
+        self.action_incr_threshold.setEnabled(True)
+        self.action_decr_threshold.setEnabled(True)
+        self.action_incr_threshold_by_5.setEnabled(True)
+        self.action_decr_threshold_by_5.setEnabled(True)
 
     def update_ui(self):
         '''Updates UI whenever `self.curr_idx` changes.'''
@@ -231,7 +359,7 @@ class MainWindow(QMainWindow):
 
     def update_window_title(self):
         '''Adds the current preview's filename to the window's title.'''
-        self.setWindowTitle(self.title + ' |  ' + self.filenames[self.curr_idx])
+        self.setWindowTitle(f'{self.title} | {self.filenames[self.curr_idx]}')
 
     def update_threshold_display(self):
         '''
@@ -244,7 +372,7 @@ class MainWindow(QMainWindow):
             else self.default_threshold_value
         )
         self.threshold_slider.setValue(curr_threshold_value)
-        self.threshold_display.setText(str(curr_threshold_value) + '%')
+        self.threshold_display.setText(f'{curr_threshold_value}%')
 
     def update_previews(self):
         '''Update the input and output previews.'''
@@ -271,7 +399,9 @@ class MainWindow(QMainWindow):
         according to the `self.curr_idx`.
         '''
         output_preview_img = self.input_images[self.curr_idx].clone()
-        output_preview_img.threshold(self.threshold_values[self.curr_idx] / 100)
+        output_preview_img.threshold(
+            self.threshold_values[self.curr_idx] / 100
+        )
         output_preview_pixmap = generate_preview(
             output_preview_img,
             self.output_preview_display.size()
@@ -309,12 +439,14 @@ class MainWindow(QMainWindow):
         msgbox = QMessageBox(self)
         msgbox.setIcon(QMessageBox.Warning)
         msgbox.setWindowTitle(self.title)
-        msgbox.setText(f'“{filename}" already exists. Do you want to replace it?')
+        msgbox.setText(
+            f'“{filename}" already exists. Do you want to replace it?'
+        )
         msgbox.setInformativeText(
-            (f'A file with the same name already exists in the folder "{dirname}". '
-             'Replacing it will overwrite it.'
-             '\n\n Tip: If you do not want to replace it, click "Cancel" and '
-             'select a different folder.')
+            f'A file with the same name already exists in the folder "{dirname}". '
+            'Replacing it will overwrite it.'
+            '\n\n Tip: If you do not want to replace it, click "Cancel" and '
+            'select a different folder.'
         )
         msgbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
 
@@ -340,7 +472,7 @@ class MainWindow(QMainWindow):
         msgbox = QMessageBox(self)
         msgbox.setIcon(QMessageBox.Information)
         msgbox.setWindowTitle(self.title)
-        msgbox.setText(f'Saved output images to the selected folder.')
+        msgbox.setText('Saved output images to the selected folder.')
         msgbox.setInformativeText(
             (f'Saved image files to "{output_dirpath}"')
         )
