@@ -16,3 +16,4 @@
 - [x] Rearrange imports in alphabetical order.
 - [ ] (Find a way to) Add ImageMagick to app bundle
 - [ ] Disable prev and next btns when the curr_idx is first and last, respectively.
+- [ ] Dont show saved msg when none of the file is saved.
