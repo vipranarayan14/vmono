@@ -27,3 +27,5 @@
 - [x] Use low-quality image for perviews
 - [-] Support opening of any image format.
 - [x] Fix previews and threshold display not updating when next or prev btns are clicked.
+- [ ] Rearrange imports in alphabetical order.
+- [ ] (Find a way to) Add ImageMagick to app bundle
