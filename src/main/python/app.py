@@ -4,21 +4,22 @@ by adjusting its threshold using Wand API for ImageMagick.
 '''
 
 from os import path
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
-    QMainWindow,
-    QWidget,
-    QLabel,
-    QPushButton,
     QFileDialog,
-    QVBoxLayout,
     QHBoxLayout,
-    QSlider,
+    QLabel,
+    QMainWindow,
+    QMenu,
     QMessageBox,
+    QPushButton,
     QSizePolicy,
-    QMenu
+    QSlider,
+    QVBoxLayout,
+    QWidget
 )
 
 from wand.image import Image
