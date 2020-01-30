@@ -74,7 +74,7 @@ class MainWindow(QMainWindow):
         '''Initiates user interface.'''
         # === controls_layout ===
         open_btn = QPushButton('Open')
-        open_btn.clicked.connect(self.on_open_btn_click)
+        open_btn.clicked.connect(self.open_images)
 
         self.threshold_slider = QSlider(Qt.Horizontal)
         self.threshold_slider.setMinimum(self.min_threshold_value)
@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
 
         self.save_btn = QPushButton('Save')
         self.save_btn.setEnabled(False)
-        self.save_btn.clicked.connect(self.on_save_btn_click)
+        self.save_btn.clicked.connect(self.save_images)
 
         controls_layout = QHBoxLayout()
         controls_layout.addWidget(open_btn)
@@ -102,7 +102,7 @@ class MainWindow(QMainWindow):
         self.prev_btn = QPushButton('<<')
         self.prev_btn.setEnabled(False)
         self.prev_btn.setFixedWidth(50)
-        self.prev_btn.clicked.connect(self.on_prev_btn_click)
+        self.prev_btn.clicked.connect(self.prev_image)
 
         self.threshold_display = QLabel()
         self.threshold_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
         self.next_btn = QPushButton('>>')
         self.next_btn.setEnabled(False)
         self.next_btn.setFixedWidth(50)
-        self.next_btn.clicked.connect(self.on_next_btn_click)
+        self.next_btn.clicked.connect(self.next_image)
 
         nav_layout = QHBoxLayout()
         nav_layout.addWidget(self.prev_btn)
@@ -164,13 +164,13 @@ class MainWindow(QMainWindow):
             '&Open...',
             self,
             shortcut='Ctrl+O',
-            triggered=self.on_open_btn_click
+            triggered=self.open_images
         )
         self.action_save = QAction(
             '&Save...',
             self,
             shortcut='Ctrl+S',
-            triggered=self.on_save_btn_click,
+            triggered=self.save_images,
             enabled=False
         )
 
@@ -237,7 +237,7 @@ class MainWindow(QMainWindow):
         self.menuBar().addMenu(self.edit_menu)
         self.menuBar().addMenu(self.about_menu)
 
-    def on_open_btn_click(self):
+    def open_images(self):
         '''Handles `open_btn` click event.'''
         filepaths, _ = QFileDialog.getOpenFileNames(
             self,
@@ -247,11 +247,11 @@ class MainWindow(QMainWindow):
 
         if filepaths:
             self.reset_attributes()
-            self.load_img(filepaths)
+            self.load_images(filepaths)
             self.enable_ui()
             self.default_output_path = path.dirname(filepaths[0])
 
-    def on_save_btn_click(self):
+    def save_images(self):
         '''Handles `self.save_btn` click event.'''
         dirpath = QFileDialog.getExistingDirectory(
             self, 'Save to Folder', self.default_output_path)
@@ -265,13 +265,13 @@ class MainWindow(QMainWindow):
         self.update_threshold_display()
         self.update_output_preview()
 
-    def on_prev_btn_click(self):
+    def prev_image(self):
         '''Handles `self.prev_btn` click event.'''
         if self.curr_idx > 0:
             self.curr_idx -= 1
             self.update_ui()
 
-    def on_next_btn_click(self):
+    def next_image(self):
         '''Handles `self.next_btn` click event.'''
         if self.curr_idx < len(self.input_images) - 1:
             self.curr_idx += 1
@@ -316,7 +316,7 @@ class MainWindow(QMainWindow):
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.exec()
 
-    def load_img(self, filepaths):
+    def load_images(self, filepaths):
         '''
         Loads the image for the given `filepaths`
         and stores them in `self.input_images`.
