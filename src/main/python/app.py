@@ -251,71 +251,6 @@ class MainWindow(QMainWindow):
             self.enable_ui()
             self.default_output_path = path.dirname(filepaths[0])
 
-    def save_images(self):
-        '''Handles `self.save_btn` click event.'''
-        dirpath = QFileDialog.getExistingDirectory(
-            self, 'Save to Folder', self.default_output_path)
-
-        if dirpath:
-            self.generate_output(dirpath)
-
-    def on_threshold_val_change(self, value):
-        '''Handles `self.threshold_slider` value change event.'''
-        self.threshold_values[self.curr_idx] = value
-        self.update_threshold_display()
-        self.update_output_preview()
-
-    def prev_image(self):
-        '''Handles `self.prev_btn` click event.'''
-        if self.curr_idx > 0:
-            self.curr_idx -= 1
-            self.update_ui()
-
-    def next_image(self):
-        '''Handles `self.next_btn` click event.'''
-        if self.curr_idx < len(self.input_images) - 1:
-            self.curr_idx += 1
-            self.update_ui()
-
-    def resizeEvent(self, event):  # pylint: disable=invalid-name
-        '''
-        Resizes the previews when window resizes.
-        '''
-
-        if self.input_images:
-            self.update_previews()
-
-        QMainWindow.resizeEvent(self, event)
-
-    def change_threshold_val(self, change_by_value):
-        '''Changes the current threshold value by the given value'''
-        def _():
-            curr_threshold_value = self.threshold_values[self.curr_idx]
-            changed_threshold_val = curr_threshold_value + change_by_value
-
-            if changed_threshold_val > self.max_threshold_value:
-                changed_threshold_val = self.max_threshold_value
-            elif changed_threshold_val < self.min_threshold_value:
-                changed_threshold_val = self.min_threshold_value
-
-            self.threshold_values[self.curr_idx] = changed_threshold_val
-            self.update_ui()
-
-        return _
-
-    def show_about(self):
-        '''Shows information about the app.'''
-        msgbox = QMessageBox(self)
-        msgbox.setWindowTitle(self.title)
-        msgbox.setText(f'About {self.title}')
-        msgbox.setInformativeText(
-            'vMono is a GUI app to convert images (esp. scanned ones) to black-and-white'
-            ' by controlling the image threshold.'
-            '\n\n Uses ImageMagick through Wand API and Qt as GUI through PyQt5.'
-        )
-        msgbox.setStandardButtons(QMessageBox.Ok)
-        msgbox.exec()
-
     def load_images(self, filepaths):
         '''
         Loads the image for the given `filepaths`
@@ -350,6 +285,50 @@ class MainWindow(QMainWindow):
         self.action_decr_threshold.setEnabled(True)
         self.action_incr_threshold_by_5.setEnabled(True)
         self.action_decr_threshold_by_5.setEnabled(True)
+
+    def on_threshold_val_change(self, value):
+        '''Handles `self.threshold_slider` value change event.'''
+        self.threshold_values[self.curr_idx] = value
+        self.update_threshold_display()
+        self.update_output_preview()
+
+    def change_threshold_val(self, change_by_value):
+        '''Changes the current threshold value by the given value'''
+        def _():
+            curr_threshold_value = self.threshold_values[self.curr_idx]
+            changed_threshold_val = curr_threshold_value + change_by_value
+
+            if changed_threshold_val > self.max_threshold_value:
+                changed_threshold_val = self.max_threshold_value
+            elif changed_threshold_val < self.min_threshold_value:
+                changed_threshold_val = self.min_threshold_value
+
+            self.threshold_values[self.curr_idx] = changed_threshold_val
+            self.update_ui()
+
+        return _
+
+    def prev_image(self):
+        '''Handles `self.prev_btn` click event.'''
+        if self.curr_idx > 0:
+            self.curr_idx -= 1
+            self.update_ui()
+
+    def next_image(self):
+        '''Handles `self.next_btn` click event.'''
+        if self.curr_idx < len(self.input_images) - 1:
+            self.curr_idx += 1
+            self.update_ui()
+
+    def resizeEvent(self, event):  # pylint: disable=invalid-name
+        '''
+        Resizes the previews when window resizes.
+        '''
+
+        if self.input_images:
+            self.update_previews()
+
+        QMainWindow.resizeEvent(self, event)
 
     def update_ui(self):
         '''Updates UI whenever `self.curr_idx` changes.'''
@@ -408,6 +387,14 @@ class MainWindow(QMainWindow):
             self.output_preview_display.size()
         )
         self.output_preview_display.setPixmap(output_preview_pixmap)
+
+    def save_images(self):
+        '''Handles `self.save_btn` click event.'''
+        dirpath = QFileDialog.getExistingDirectory(
+            self, 'Save to Folder', self.default_output_path)
+
+        if dirpath:
+            self.generate_output(dirpath)
 
     def generate_output(self, dirpath):
         '''
@@ -476,6 +463,19 @@ class MainWindow(QMainWindow):
         msgbox.setText('Saved output images to the selected folder.')
         msgbox.setInformativeText(
             (f'Saved image files to "{output_dirpath}"')
+        )
+        msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.exec()
+
+    def show_about(self):
+        '''Shows information about the app.'''
+        msgbox = QMessageBox(self)
+        msgbox.setWindowTitle(self.title)
+        msgbox.setText(f'About {self.title}')
+        msgbox.setInformativeText(
+            'vMono is a GUI app to convert images (esp. scanned ones) to black-and-white'
+            ' by controlling the image threshold.'
+            '\n\n Uses ImageMagick through Wand API and Qt as GUI through PyQt5.'
         )
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.exec()
