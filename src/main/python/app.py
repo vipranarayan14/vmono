@@ -136,12 +136,12 @@ class MainWindow(QMainWindow):
 
         # === footer_layout ===
 
-        footer = QLabel('Copyright (c) 2020 Prasanna Venkatesh T S')
-        footer.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        footer.setMaximumHeight(15)
+        self.image_number_display = QLabel()
+        self.image_number_display.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.image_number_display.setMaximumHeight(15)
 
         footer_layout = QHBoxLayout()
-        footer_layout.addWidget(footer)
+        footer_layout.addWidget(self.image_number_display)
 
         # === layout_wrapper ===
         layout_wrapper = QVBoxLayout()
@@ -296,6 +296,7 @@ class MainWindow(QMainWindow):
         ] * len(self.input_images)
 
         self.update_previews()
+        self.update_image_number_display()
 
     def enable_ui(self):
         '''Enables the UI after an image is loaded.'''
@@ -361,6 +362,7 @@ class MainWindow(QMainWindow):
         '''Updates UI whenever `self.curr_idx` changes.'''
         self.update_previews()
         self.update_threshold_display()
+        self.update_image_number_display()
         self.update_window_title()
         self.repaint()
 
@@ -380,6 +382,10 @@ class MainWindow(QMainWindow):
         )
         self.threshold_slider.setValue(curr_threshold_value)
         self.threshold_display.setText(f'{curr_threshold_value}%')
+
+    def update_image_number_display(self):
+        '''Shows total no. of images loaded and the curr image's no. like "1 of 34".'''
+        self.image_number_display.setText(f'{self.curr_idx + 1} of {len(self.input_images)}')
 
     def update_previews(self):
         '''Update the input and output previews.'''
@@ -500,9 +506,13 @@ class MainWindow(QMainWindow):
         msgbox.setWindowTitle(self.title)
         msgbox.setText(f'About {self.title}')
         msgbox.setInformativeText(
+            'Copyright (c) 2020 Prasanna Venkatesh T S'
+            '\n\n'
             'vMono is a GUI app to convert images (esp. scanned ones) to black-and-white'
             ' by controlling the image threshold.'
-            '\n\n Uses ImageMagick through Wand API and Qt as GUI through PyQt5.'
+            '\n\n'
+            'Uses ImageMagick through Wand API and Qt as GUI through PyQt5.'
         )
         msgbox.setStandardButtons(QMessageBox.Ok)
+        msgbox.setStyleSheet('min-width: 300px')
         msgbox.exec()
