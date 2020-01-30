@@ -17,3 +17,4 @@
 - [ ] (Find a way to) Add ImageMagick to app bundle
 - [ ] Disable prev and next btns when the curr_idx is first and last, respectively.
 - [ ] Dont show saved msg when none of the file is saved.
+- [ ] add support for showing total no. of images loaded and the curr image's no. like '3 of 34'.
