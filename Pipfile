@@ -8,10 +8,10 @@ pylint = "*"
 autopep8 = "*"
 
 [packages]
-wand = "*"
 pyqt5 = "*"
 pyinstaller = "==3.4"
 fbs = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"

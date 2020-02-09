@@ -22,7 +22,7 @@ from PyQt5.QtWidgets import (
     QWidget
 )
 
-from wand.image import Image
+from image import Image
 
 
 def generate_preview(image, size):
@@ -290,7 +290,7 @@ class MainWindow(QMainWindow):
             filename = path.basename(filepath)
             self.filenames.append(filename)
 
-            input_image = Image(filename=filepath)
+            input_image = Image(filepath)
             self.input_images.append(input_image)
 
         self.threshold_values = [
@@ -487,7 +487,7 @@ class MainWindow(QMainWindow):
         '''
         img = self.input_images[idx].clone()
         img.threshold(self.threshold_values[idx] / 100)
-        img.save(filename=filepath)
+        img.save(filepath)
 
     def show_saved_msg(self, output_dirpath):
         '''
