@@ -40,16 +40,9 @@ steps:
 
 - script: |
     sudo apt-get install ruby ruby-dev rubygems build-essential
+
+    sudo gem install --no-document fpm
     
-    mkdir ~/.gems
-    echo 'export GEM_HOME=~/.gems/' >> ~/.bashrc
-    echo 'export PATH="$PATH:~/.gems/bin"' >> ~/.bashrc
-    source ~/.bashrc
-
-    cat ~/.bashrc
-
-    gem install --no-document fpm
-    ls ~/.gems
     fpm --version
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: 'Install Linux Dependencies'
