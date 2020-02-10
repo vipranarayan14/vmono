@@ -60,7 +60,6 @@ steps:
   inputs:
     Contents: 'target/*(.deb|.dmg|Setup.exe)'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:
