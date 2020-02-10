@@ -33,7 +33,7 @@ steps:
     
     if [variables['Agent.OS'] = 'Windows_NT']
     then
-      pipenv install pypiwin32
+      pip install pypiwin32
     fi
 
   displayName: 'Install Python Dependencies'
