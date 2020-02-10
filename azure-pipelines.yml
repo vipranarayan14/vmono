@@ -10,10 +10,10 @@ strategy:
   matrix:
     linux:
       imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macos-10.14'
-    windows:
-      imageName: 'vs2017-win2016'
+    # mac:
+    #   imageName: 'macos-10.14'
+    # windows:
+    #   imageName: 'vs2017-win2016'
 
 pool:
   vmImage: $(imageName)
@@ -39,28 +39,10 @@ steps:
   displayName: 'Install Windows Dependencies'
 
 - script: |
-    sudo apt-get remove ruby
-
-    sudo apt-get update 
-    sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev
-
-    git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-    exec $SHELL
-
-    git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-    echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
-    exec $SHELL
-
-    ruby_latest=$(rbenv install -l | grep -v - | tail -1)
-    rbenv install ruby_latest
-    rbenv global ruby_latest
-    
-    ruby -v
-    gem -v
-    
+    apt-get install ruby ruby-dev rubygems build-essential
+    ls -lh
     gem install --no-document fpm
+    ls .gems
     fpm --version
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: 'Install Linux Dependencies'
