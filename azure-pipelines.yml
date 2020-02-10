@@ -39,8 +39,13 @@ steps:
   displayName: 'Install Windows Dependencies'
 
 - script: |
-    apt-get install ruby ruby-dev rubygems build-essential
-    ls -lh
+    sudo apt-get install ruby ruby-dev rubygems build-essential
+    
+    mkdir ~/.gems
+    echo 'export GEM_HOME=~/.gems/' >> ~/.bashrc
+    echo 'export PATH="$PATH:~/.gems/bin"' >> ~/.bashrc
+    source ~/.bashrc
+
     gem install --no-document fpm
     ls .gems
     fpm --version
