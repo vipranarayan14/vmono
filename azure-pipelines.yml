@@ -60,9 +60,9 @@ steps:
   inputs:
     Contents: |
       target/?(*.deb|*.dmg|*Setup.exe)
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/$(System.JobName)'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(System.JobName)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(System.JobName)'
     ArtifactName: 'installer'
