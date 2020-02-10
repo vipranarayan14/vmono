@@ -64,5 +64,5 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/($System.JobName)'
+    PathtoPublish: '$(System.JobName)'
     ArtifactName: 'installer'
