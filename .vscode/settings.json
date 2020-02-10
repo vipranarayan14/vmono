@@ -1,5 +1,5 @@
 {
-  "python.pythonPath": "/Users/prasanna/Documents/Projects/Programming/vmono/.venv/bin/python3.7",
+  "python.pythonPath": ".venv/bin/python",
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true
 }
