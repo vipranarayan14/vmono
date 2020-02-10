@@ -58,7 +58,10 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    Contents: 'target/*(.deb|.dmg|Setup.exe)'
+    Contents: |
+      target/*.deb
+      target/*.dmg
+      target/*Setup.exe
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
