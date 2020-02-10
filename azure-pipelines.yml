@@ -30,13 +30,19 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install pipenv
-    pipenv install
-  displayName: 'Install Dependencies'
+    
+    if [variables['Agent.OS'] = 'Windows_NT']
+    then
+      pipenv install pypiwin32
+    fi
+
+  displayName: 'Install Python Dependencies'
 
 - script: |
-    pipenv install pypiwin32
-  condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  displayName: 'Install Windows Dependencies'
+    pipenv install
+    pipenv graph
+
+  displayName: 'Install Package Dependencies'
 
 - script: |
     sudo apt-get install ruby ruby-dev rubygems build-essential
@@ -44,25 +50,26 @@ steps:
     sudo gem install --no-document fpm
     
     fpm --version
+
   condition: eq( variables['Agent.OS'], 'Linux' )
-  displayName: 'Install Linux Dependencies'
+  displayName: 'Install FBS Dependencies'
 
 - script: |
-    pipenv graph
     pipenv run fbs freeze
   displayName: 'Build App'
 
 - script: |
     pipenv run fbs installer
+
   displayName: 'Make Installer'
 
 - task: CopyFiles@2
   inputs:
-    Contents: |
-      target/?(*.deb|*.dmg|*Setup.exe)
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/'
+    SourceFolder: 'target/'
+    Contents: '?(*.deb|*.dmg|*Setup.exe)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)/'
-    ArtifactName: '$(System.JobName)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(System.JobName)/installer'
