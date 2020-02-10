@@ -7,7 +7,7 @@ trigger:
 - master
  
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'vs2017-win2016'
 strategy:
   matrix:
     Python37:
@@ -23,6 +23,7 @@ steps:
     python -m pip install --upgrade pip
     pip install pipenv
     pipenv install
+    pipenv install pypiwin32
   displayName: 'Install dependencies'
 
 - script: |
