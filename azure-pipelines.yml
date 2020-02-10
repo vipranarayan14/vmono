@@ -5,13 +5,21 @@
 
 trigger:
 - master
- 
-pool:
-  vmImage: 'vs2017-win2016'
+
 strategy:
   matrix:
-    Python37:
-      python.version: '3.7.6'
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.14'
+    windows:
+      imageName: 'vs2017-win2016'
+
+pool:
+  vmImage: $(imageName)
+
+variables:
+  python.version: 3.7.6
 
 steps:
 - task: UsePythonVersion@0
@@ -23,26 +31,36 @@ steps:
     python -m pip install --upgrade pip
     pip install pipenv
     pipenv install
+  displayName: 'Install Dependencies'
+
+- script: |
     pipenv install pypiwin32
-  displayName: 'Install dependencies'
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: 'Install Windows Dependencies'
+
+- script: |
+    apt-get install ruby ruby-dev rubygems build-essential
+    gem install --no-document fpm
+    fpm --version
+  condition: eq( variables['Agent.OS'], 'Linux' )
+  displayName: 'Install Linux Dependencies'
 
 - script: |
     pipenv graph
     pipenv run fbs freeze
-  displayName: 'fbs freeze'
+  displayName: 'Build App'
 
 - script: |
-    pipenv graph
     pipenv run fbs installer
-  displayName: 'fbs installer'
+  displayName: 'Make Installer'
 
-- publish: $(System.DefaultWorkingDirectory)
+# - publish: $(System.DefaultWorkingDirectory)
  
-- task: DownloadBuildArtifacts@0
-  displayName: download build artefacts
-  inputs:
-    buildType: 'current'
-    branchName: 'refs/heads/master'
-    buildVersionToDownload: 'latest'
-    downloadType: 'specific'
-    downloadPath: '$(System.ArtifactsDirectory)'
+# - task: DownloadBuildArtifacts@0
+#   displayName: Download Build Artifacts
+#   inputs:
+#     buildType: 'current'
+#     branchName: 'refs/heads/master'
+#     buildVersionToDownload: 'latest'
+#     downloadType: 'specific'
+#     downloadPath: '$(System.ArtifactsDirectory)'
