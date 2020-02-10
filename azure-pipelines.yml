@@ -8,10 +8,10 @@ trigger:
 
 strategy:
   matrix:
-    linux:
-      imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macos-10.14'
+    # linux:
+    #   imageName: 'ubuntu-16.04'
+    # mac:
+    #   imageName: 'macos-10.14'
     windows:
       imageName: 'vs2017-win2016'
 
@@ -31,7 +31,10 @@ steps:
     python -m pip install --upgrade pip
     pip install pipenv
     
-    if [variables['Agent.OS'] = 'Windows_NT']
+    echo $AGENT_OS
+    echo $(Agent.OS)
+
+    if [ $(Agent.OS) = 'Windows_NT' ]
     then
       pip install pypiwin32
     fi
