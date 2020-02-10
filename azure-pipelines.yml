@@ -8,10 +8,10 @@ trigger:
 
 strategy:
   matrix:
-    # linux:
-    #   imageName: 'ubuntu-16.04'
-    # mac:
-    #   imageName: 'macos-10.14'
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.14'
     windows:
       imageName: 'vs2017-win2016'
 
@@ -30,13 +30,10 @@ steps:
 - bash: |
     python -m pip install --upgrade pip
     pip install pipenv
-    
-    echo $AGENT_OS
-    echo $(Agent.OS)
 
     if [ $AGENT_OS = 'Windows_NT' ]
     then
-      pip install pypiwin32
+      pipenv install pypiwin32
     fi
 
   displayName: 'Install Python Dependencies'
