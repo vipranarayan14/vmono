@@ -75,3 +75,13 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: '$(System.JobName)'
 
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github.com_vipranarayan14'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'userSpecifiedTag'
+    tag: 'v0.2.0'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
