@@ -24,12 +24,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install pipenv
       
-    - name: Install Pyinstaller dependencies
+    - name: Install Windows requirements
       run: |
-        pip install pypiwin32
+        pipenv install pypiwin32
       if: matrix.platform == 'windows-latest'
   
-    - name: Install FBS dependencies
+    - name: Install Linux requirements
       run: |
         sudo apt-get update
         sudo apt-get install ruby ruby-dev rubygems build-essential
@@ -38,7 +38,7 @@ jobs:
 
         fpm --version
 
-      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      if: matrix.platform == 'ubuntu-latest'
         
     - name: Install Package dependencies
       run: |
