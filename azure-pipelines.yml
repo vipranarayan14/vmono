@@ -39,7 +39,7 @@ steps:
     then
       pipenv install pypiwin32
     fi
-    
+
     pipenv graph
 
   displayName: 'Install Package Dependencies'
@@ -74,3 +74,4 @@ steps:
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: '$(System.JobName)'
+
