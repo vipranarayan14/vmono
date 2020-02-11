@@ -1,6 +1,6 @@
 {
     "categories": "Utility;",
-    "description": "",
+    "description": "A GUI app to convert images (esp. scanned ones) to black-and-white by controlling the image threshold.",
     "author_email": "",
-    "url": ""
+    "url": "https://github.com/vipranarayan14/vmono"
 }
