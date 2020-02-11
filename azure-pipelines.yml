@@ -68,7 +68,7 @@ steps:
     SourceFolder: 'target/'
     Contents: '?(*.deb|*.dmg|*Setup.exe)'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy Files to $(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy Files'
 
 - task: PublishBuildArtifacts@1
   inputs:
