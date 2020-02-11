@@ -5,7 +5,7 @@ by adjusting its threshold using Wand API for ImageMagick.
 
 from os import path
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QDir
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
@@ -269,6 +269,7 @@ class MainWindow(QMainWindow):
         filepaths, _ = QFileDialog.getOpenFileNames(
             self,
             caption='Open file',
+            directory=QDir.homePath(),
             filter='Image files (*.jpg *.jpeg *.png *.tiff *.tif *.gif)'
         )
 
