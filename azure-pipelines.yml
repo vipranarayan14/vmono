@@ -22,77 +22,76 @@ variables:
   python.version: 3.7.6
 
 steps:
-# - task: UsePythonVersion@0
-#   inputs:
-#     versionSpec: '$(python.version)'
-#   displayName: 'Use Python $(python.version)'
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(python.version)'
+  displayName: 'Use Python $(python.version)'
 
 - bash: |
-    VERSION_TAG=`git describe --tags` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
+    VERSION_TAG=`v0.3.0` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
   displayName: Set the tag name as an environment variable
 
 - script: |
-    echo $(VERSION_TAG)
     # python -m pip install --upgrade pip
     # pip install pipenv
   displayName: 'Install Python Dependencies'
 
-# - script: |
-#     pipenv install
-#     pipenv graph
-#   displayName: 'Install Package Dependencies'
+- script: |
+    pipenv install
+    pipenv graph
+  displayName: 'Install Package Dependencies'
 
-# - script: |
-#     sudo apt-get install ruby ruby-dev rubygems build-essential
-#     sudo gem install --no-document fpm 
-#     fpm --version
-#   condition: eq( variables['Agent.OS'], 'Linux' )
-#   displayName: 'Install FBS Dependencies'
+- script: |
+    sudo apt-get install ruby ruby-dev rubygems build-essential
+    sudo gem install --no-document fpm 
+    fpm --version
+  condition: eq( variables['Agent.OS'], 'Linux' )
+  displayName: 'Install FBS Dependencies'
 
-# - script: |
-#     pipenv run fbs freeze
-#   displayName: 'Build App'
+- script: |
+    pipenv run fbs freeze
+  displayName: 'Build App'
 
-# - script: |
-#     pipenv run fbs installer
-#   displayName: 'Make Installer'
+- script: |
+    pipenv run fbs installer
+  displayName: 'Make Installer'
 
-# - task: ArchiveFiles@2
-#   inputs:
-#     rootFolderOrFile: 'target/vMono/'
-#     includeRootFolder: false
-#     archiveType: 'zip'
-#     archiveFile: '$(Build.ArtifactStagingDirectory)/vMono-windows-portable.zip'
-#     replaceExistingArchive: true
-#   condition: eq( variables['Agent.OS'], 'Windows_NT' )
-#   displayName: 'Make Windows Portable App'
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'target/vMono/'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/vMono-windows-portable.zip'
+    replaceExistingArchive: true
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: 'Make Windows Portable App'
 
-# - task: CopyFiles@2
-#   inputs:
-#     SourceFolder: 'target/'
-#     Contents: |
-#       *.deb
-#       *.dmg
-#       *Setup.exe
-#       *-windows-portable.zip
-#     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-#   displayName: 'Copy Assets to Artifact Directory'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'target/'
+    Contents: |
+      *.deb
+      *.dmg
+      *Setup.exe
+      *-windows-portable.zip
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: 'Copy Assets to Artifact Directory'
 
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#     ArtifactName: '$(System.JobName)'
-#   displayName: 'Publish Assets in Artifact Directory'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(System.JobName)'
+  displayName: 'Publish Assets in Artifact Directory'
 
-# - task: GitHubRelease@1
-#   inputs:
-#     gitHubConnection: 'github.com_vipranarayan14'
-#     repositoryName: '$(Build.Repository.Name)'
-#     action: 'edit'
-#     target: '$(Build.SourceVersion)'
-#     tag: 'v0.2.0'
-#     title: 'v0.2.0'
-#     assetUploadMode: 'replace'
-#     changeLogCompareToRelease: 'lastFullRelease'
-#     changeLogType: 'commitBased'
-#   displayName: 'Create GitHub Releases with Assets'
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github.com_vipranarayan14'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'edit'
+    target: '$(Build.SourceVersion)'
+    tag: '$(VERSION_TAG)'
+    title: '$(VERSION_TAG)'
+    assetUploadMode: 'replace'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
+  displayName: 'Create GitHub Releases with Assets'
