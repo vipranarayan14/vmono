@@ -30,12 +30,6 @@ steps:
 - bash: |
     python -m pip install --upgrade pip
     pip install pipenv
-
-    if [ $AGENT_OS = 'Windows_NT' ]
-    then
-      pipenv install pypiwin32
-    fi
-
   displayName: 'Install Python Dependencies'
 
 - script: |
@@ -68,8 +62,9 @@ steps:
     SourceFolder: 'target/'
     Contents: '?(*.deb|*.dmg|*Setup.exe)'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: Copy Files to $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: '$(System.JobName)/installer'
+    ArtifactName: '$(System.JobName)'
