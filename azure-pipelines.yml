@@ -34,23 +34,13 @@ steps:
 
 - bash: |
     pipenv install
-
-    if [ $AGENT_OS = 'Windows_NT' ]
-    then
-      pipenv install pypiwin32
-    fi
-
     pipenv graph
-
   displayName: 'Install Package Dependencies'
 
 - script: |
     sudo apt-get install ruby ruby-dev rubygems build-essential
-
-    sudo gem install --no-document fpm
-    
+    sudo gem install --no-document fpm 
     fpm --version
-
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: 'Install FBS Dependencies'
 
@@ -67,10 +57,10 @@ steps:
     rootFolderOrFile: 'target/vMono/'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/target/vMono-windows-portable.zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/vMono-windows-portable.zip'
     replaceExistingArchive: true
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  displayName: Make Windows Portable App
+  displayName: 'Make Windows Portable App'
 
 - task: CopyFiles@2
   inputs:
@@ -81,12 +71,13 @@ steps:
       *Setup.exe
       *-windows-portable.zip
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy Installers'
+  displayName: 'Copy Assets to Artifact Directory'
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: '$(System.JobName)'
+  displayName: 'Publish Assets in Artifact Directory'
 
 - task: GitHubRelease@1
   inputs:
@@ -99,3 +90,4 @@ steps:
     assetUploadMode: 'replace'
     changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
+  displayName: 'Create GitHub Releases with Assets'
