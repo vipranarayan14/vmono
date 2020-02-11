@@ -70,7 +70,7 @@ steps:
       *.deb
       *.dmg
       *Setup.exe
-      vMono/
+      vMono/**
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: 'Copy Files'
 
@@ -79,13 +79,13 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: '$(System.JobName)'
 
-- task: GitHubRelease@1
-  inputs:
-    gitHubConnection: 'github.com_vipranarayan14'
-    repositoryName: '$(Build.Repository.Name)'
-    action: 'edit'
-    target: '$(Build.SourceVersion)'
-    tag: 'v0.2.0'
-    assetUploadMode: 'replace'
-    changeLogCompareToRelease: 'lastFullRelease'
-    changeLogType: 'commitBased'
+# - task: GitHubRelease@1
+#   inputs:
+#     gitHubConnection: 'github.com_vipranarayan14'
+#     repositoryName: '$(Build.Repository.Name)'
+#     action: 'edit'
+#     target: '$(Build.SourceVersion)'
+#     tag: 'v0.2.0'
+#     assetUploadMode: 'replace'
+#     changeLogCompareToRelease: 'lastFullRelease'
+#     changeLogType: 'commitBased'
