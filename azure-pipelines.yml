@@ -27,14 +27,14 @@ steps:
     versionSpec: '$(python.version)'
   displayName: 'Use Python $(python.version)'
 
-- bash: |
+- script: |
     python -m pip install --upgrade pip
     pip install pipenv
   displayName: 'Install Python Dependencies'
 
-- script: |
+- bash: |
     pipenv install
-    
+
     if [ $AGENT_OS = 'Windows_NT' ]
     then
       pipenv install pypiwin32
