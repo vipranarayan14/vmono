@@ -79,7 +79,7 @@ steps:
   inputs:
     gitHubConnection: 'github.com_vipranarayan14'
     repositoryName: '$(Build.Repository.Name)'
-    action: 'create'
+    action: 'edit'
     target: '$(Build.SourceVersion)'
     tagSource: 'userSpecifiedTag'
     tag: 'v0.2.0'
