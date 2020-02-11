@@ -7,9 +7,15 @@ jobs:
     
     strategy:
       matrix:
-        platform: [windows-latest, ubuntu-latest]
+        include: 
+          - os: windows-latest
+            artifact_name: vMonoSetup.exe
+            asset_name: vmono-windows-amd64
+          - os: ubuntu-latest
+            artifact_name: vMono.deb
+            asset_name: vmono-linux-amd64
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
@@ -48,10 +54,6 @@ jobs:
       run: |
         pipenv run fbs installer
     
-    - name: Build project # This would actually build your project, using zip for an example artifact
-      run: |
-        zip --junk-paths my-artifact target/?(*.deb|*Setup.exe)
-    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -70,8 +72,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ./my-artifact.zip
-        asset_name: my-artifact.zip
+        asset_path: target/${{ matrix.artifact_name }}
+        asset_name: ${{ matrix.asset_name }}
         asset_content_type: application/zip
 
       
