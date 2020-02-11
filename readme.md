@@ -1,24 +1,19 @@
 # vMono
 
-A GUI app to convert images (esp. scanned ones) to black-and-white by controlling the image threshold. 
-Uses ImageMagick through Wand API and Qt as GUI through PyQt5.
+A GUI app to convert images (esp. scanned ones) to black-and-white by controlling the image threshold.
+
+## Code
+
+Uses [Pillow](https://python-pillow.org/) for image processing and [Qt](https://www.qt.io/) for GUI through [PyQt5](https://www.riverbankcomputing.com/software/pyqt/intro).
 
 ## Supported Platforms
 
-Currently, only **MacOS** is supported. But the app can be built from source on any system.
+- Windows 7/8/10 (Not tested)
+- Ubuntu 16.04 (tested on 18.04)
+- MacOS 10.14 (tested on 10.15)
+
+The app can also be built from source on any system that supports Qt and Python.
 
 ## Installation
 
-### For MacOS
-
-#### Step 1: Installing ImageMagick
-
-The app depends on ImageMagick. So, first install ImagickMagick through `brew` or through any other methods listed [here](https://imagemagick.org/script/download.php).
-
-```
-brew install imagemagick
-```
-
-#### Step 1: Installing the App
-
-Download and install the app.
+Download the installer corresponding to your system from the [Releases](https://github.com/vipranarayan14/vmono/releases) page.
