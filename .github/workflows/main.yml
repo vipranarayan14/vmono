@@ -36,6 +36,7 @@ jobs:
 
     - name: Install FBS Dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install ruby ruby-dev rubygems build-essential 
 
         sudo gem install --no-document fpm
