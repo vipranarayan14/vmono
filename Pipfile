@@ -10,6 +10,8 @@ autopep8 = "*"
 [packages]
 pyqt5 = "*"
 pyinstaller = "==3.4"
+pypiwin32 = {version = "*", sys_platform = "== 'win32'"}
+pywin32 = {version = "*", sys_platform = "== 'win32'"}
 fbs = "*"
 pillow = "*"
 
