@@ -50,7 +50,7 @@ jobs:
     
     - name: Build project # This would actually build your project, using zip for an example artifact
       run: |
-        zip --junk-paths my-artifact README.md
+        zip --junk-paths my-artifact target/?(*.deb|*Setup.exe)
     
     - name: Create Release
       id: create_release
