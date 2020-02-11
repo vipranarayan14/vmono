@@ -60,8 +60,17 @@ steps:
 
 - script: |
     pipenv run fbs installer
-
   displayName: 'Make Installer'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'target/vMono/'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/target/vMono-windows-portable.zip'
+    replaceExistingArchive: true
+  condition: eq eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: Make Windows Portable App
 
 - task: CopyFiles@2
   inputs:
@@ -70,9 +79,9 @@ steps:
       *.deb
       *.dmg
       *Setup.exe
-      vMono/**
+      *-windows-portable.zip
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy Files'
+  displayName: 'Copy Installers'
 
 - task: PublishBuildArtifacts@1
   inputs:
