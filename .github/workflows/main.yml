@@ -27,6 +27,7 @@ jobs:
     - name: Install Windows requirements
       run: |
         pipenv install pypiwin32
+        pipenv install pywin32-ctypes
       if: matrix.platform == 'windows-latest'
   
     - name: Install Linux requirements
