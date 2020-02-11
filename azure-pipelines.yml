@@ -28,7 +28,7 @@ steps:
   displayName: 'Use Python $(python.version)'
 
 - bash: |
-    VERSION_TAG="v0.3.0" && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
+    VERSION_TAG=`git describe --abbrev=0 --tags` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
   displayName: Set the tag name as an environment variable
 
 - script: |
@@ -87,7 +87,7 @@ steps:
   inputs:
     gitHubConnection: 'github.com_vipranarayan14'
     repositoryName: '$(Build.Repository.Name)'
-    action: 'edit'
+    action: 'create'
     target: '$(Build.SourceVersion)'
     tag: '$(VERSION_TAG)'
     title: '$(VERSION_TAG)'
