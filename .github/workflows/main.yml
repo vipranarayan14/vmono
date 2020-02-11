@@ -43,7 +43,7 @@ jobs:
 
         fpm --version
 
-      if: ${{ matrix.platform }} == 'ubuntu-latest'
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
     
     - name: Build App
       run: |
