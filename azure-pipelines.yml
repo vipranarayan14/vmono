@@ -69,7 +69,7 @@ steps:
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/target/vMono-windows-portable.zip'
     replaceExistingArchive: true
-  condition: eq eq( variables['Agent.OS'], 'Windows_NT' )
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Make Windows Portable App
 
 - task: CopyFiles@2
