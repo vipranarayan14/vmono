@@ -38,8 +38,6 @@ steps:
     mkdir .venv
     pipenv install
     pipenv graph
-    # temp fix for PyInstaller==3.6 acc. to https://github.com/mherrmann/fbs/issues/169
-    mv .venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py .venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py
   displayName: 'Install Package Dependencies'
 
 - script: |
@@ -48,6 +46,21 @@ steps:
     fpm --version
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: 'Install FBS Dependencies'
+
+- task: PythonScript@0
+  inputs:
+    script: |
+      '''Temp fix for PyInstaller==3.6 acc. to https://github.com/mherrmann/fbs/issues/169'''
+      
+      from os import path, rename
+      
+      org_file = path.normpath('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py')
+      rename_file = path.normpath('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py')
+
+      rename(org_file, rename_file)
+
+      print(f'Renamed ${org_file} to ${rename_file}.')
+  displayName: 'Fix FBS-PyInstaller Issue'
 
 - script: |
     pipenv run fbs freeze
