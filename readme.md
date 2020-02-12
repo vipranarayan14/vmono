@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/vipranarayan14/Build%20vMono/_apis/build/status/vipranarayan14.vmono?branchName=master)](https://dev.azure.com/vipranarayan14/Build%20vMono/_build/latest?definitionId=1&branchName=master)
+
 # vMono
 
 A GUI app to convert images (esp. scanned ones) to black-and-white by controlling the image threshold.
