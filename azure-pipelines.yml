@@ -34,9 +34,12 @@ steps:
     pip install pipenv
   displayName: 'Install Python Dependencies'
 
-- script: |
+- bash: |
+    mkdir .venv
     pipenv install
     pipenv graph
+    # temp fix for PyInstaller==3.6 acc. to https://github.com/mherrmann/fbs/issues/169
+    mv .venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py .venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py
   displayName: 'Install Package Dependencies'
 
 - script: |
