@@ -34,7 +34,7 @@ steps:
     pip install pipenv
   displayName: 'Install Python Dependencies'
 
-- bash: |
+- script: |
     mkdir .venv
     pipenv install
     pipenv graph
@@ -47,20 +47,20 @@ steps:
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: 'Install FBS Dependencies'
 
-- task: PythonScript@0
-  inputs:
-    script: |
-      '''Temp fix for PyInstaller==3.6 acc. to https://github.com/mherrmann/fbs/issues/169'''
-      
-      from os import rename
-      from pathlib import Path
-      
-      filename = Path('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py')
-      to_filename = Path('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py')
+- bash: |
+    echo "$AGENT_OS = ${AGENT_OS}"
 
-      rename(filename.resolve(), to_filename.resolve())
+    filename=".venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py"
+    to_filename=".venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py"
 
-      print(f'Renamed ${org_file} to ${rename_file}.')
+    if [ "$AGENT_OS" = "Windows_NT" ]
+    then
+      filename=$(sed 's/\//\\/g' <<< $filename)
+      to_filename=$(sed 's/\//\\/g' <<< $filename)
+    fi
+
+    mv -v $filename $to_filename
+
   displayName: 'Fix FBS-PyInstaller Issue'
 
 - script: |
