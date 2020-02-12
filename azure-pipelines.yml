@@ -52,12 +52,13 @@ steps:
     script: |
       '''Temp fix for PyInstaller==3.6 acc. to https://github.com/mherrmann/fbs/issues/169'''
       
-      from os import path, rename
+      from os import rename
+      from pathlib import Path
       
-      org_file = path.normpath('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py')
-      rename_file = path.normpath('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py')
+      filename = Path('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py')
+      to_filename = Path('.venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py')
 
-      rename(org_file, rename_file)
+      rename(filename.resolve(), to_filename.resolve())
 
       print(f'Renamed ${org_file} to ${rename_file}.')
   displayName: 'Fix FBS-PyInstaller Issue'
