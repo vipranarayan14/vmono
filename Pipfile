@@ -13,7 +13,7 @@ pywin32-ctypes = {version = "*",sys_platform = "== 'win32'"}
 pypiwin32 = {version = "*",sys_platform = "== 'win32'"}
 pywin32 = {version = "*",sys_platform = "== 'win32'"}
 pyqt5 = "*"
-pyinstaller = "==3.6"
+pyinstaller = "==3.5"
 fbs = "*"
 
 [requires]
