@@ -47,22 +47,6 @@ steps:
   condition: eq( variables['Agent.OS'], 'Linux' )
   displayName: 'Install FBS Dependencies'
 
-- bash: |
-    echo "$AGENT_OS = ${AGENT_OS}"
-
-    filename=".venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2.py"
-    to_filename=".venv/lib/python3.7/site-packages/fbs/freeze/hooks/hook-PySide2_fbs.py"
-
-    if [ "$AGENT_OS" = "Windows_NT" ]
-    then
-      filename=$(sed 's/\//\\/g' <<< $filename)
-      to_filename=$(sed 's/\//\\/g' <<< $filename)
-    fi
-
-    mv -v $filename $to_filename
-
-  displayName: 'Fix FBS-PyInstaller Issue'
-
 - script: |
     pipenv run fbs freeze
   displayName: 'Build App'
