@@ -511,12 +511,14 @@ class MainWindow(QMainWindow):
         msgbox.setWindowTitle(self.title)
         msgbox.setText(f'About {self.title}')
         msgbox.setInformativeText(
+            'Version: v0.2.2'
+            '\n\n'
             'Copyright (c) 2020 Prasanna Venkatesh T S'
             '\n\n'
             'vMono is a GUI app to convert images (esp. scanned ones) to black-and-white'
             ' by controlling the image threshold.'
             '\n\n'
-            'Uses ImageMagick through Wand API and Qt as GUI through PyQt5.'
+            'Uses Pillow for image processing, and Qt as GUI through PyQt5.'
         )
         msgbox.setStandardButtons(QMessageBox.Ok)
         msgbox.setStyleSheet('min-width: 300px')
