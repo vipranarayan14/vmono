@@ -18,3 +18,6 @@
 - [ ] Disable prev and next btns when the curr_idx is first and last, respectively.
 - [ ] Dont show saved msg when none of the file is saved.
 - [x] add support for showing total no. of images loaded and the curr image's no. like '3 of 34'.
+
+- [ ] add support for grayscale
+- [ ] add support for opening and saving as PDF (PyMuPDF)
